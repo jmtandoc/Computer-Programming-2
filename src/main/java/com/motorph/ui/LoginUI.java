@@ -5,56 +5,56 @@ import com.motorph.model.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 public class LoginUI extends JFrame {
 
+    private JTextField usernameField;
+    private JPasswordField passwordField;
+
     public LoginUI() {
         setTitle("MotorPH Login");
-        setSize(420, 240);
-        setLocationRelativeTo(null);
-        setLayout(new GridLayout(4, 2, 10, 10));
+        setSize(400, 220);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setLayout(new GridLayout(3, 2, 10, 10));
 
-        add(new JLabel("Username:"));
-        JTextField usernameField = new JTextField();
-        add(usernameField);
+        JLabel userLabel = new JLabel("Username:");
+        usernameField = new JTextField();
 
-        add(new JLabel("Password:"));
-        JPasswordField passwordField = new JPasswordField();
-        add(passwordField);
+        JLabel passLabel = new JLabel("Password:");
+        passwordField = new JPasswordField();
 
-        add(new JLabel());
-        JButton loginBtn = new JButton("🔓 Login");
-        add(loginBtn);
+        JButton loginBtn = new JButton("Login");
 
         loginBtn.addActionListener(e -> {
             String username = usernameField.getText().trim();
             String password = new String(passwordField.getPassword()).trim();
 
-            User user = Database.findUserByUsername(username);
-            if (user != null && user.getPassword().equals(password)) {
-                Employee emp = Database.getEmployeeByUsername(username);
-                Role role = user.getRole();
+            List<User> users = Database.getUsers();
+            for (User user : users) {
+                if (user.getUsername().equalsIgnoreCase(username)
+                        && user.getPassword().equals(password)) {
 
-                switch (role) {
-                    case ADMIN -> new LandingPageUI(user);
-                    case SUPERVISOR -> new SupervisorDashboardUI(emp);
-                    case PAYROLL -> JOptionPane.showMessageDialog(this, "Payroll dashboard coming soon!");
-                    case EMPLOYEE -> new LandingPageUI(user);
-                    default -> JOptionPane.showMessageDialog(this, "⚠️ Unknown role.");
+                    Role role = user.getRole();
+                    user.setFirstTimeLogin(false); // optional update
+
+                    dispose(); // close login window
+
+                    // 🚪 All roles launch same Landing Page
+                    new LandingPageUI(user);
+                    return;
                 }
-
-                dispose();
-            } else {
-                JOptionPane.showMessageDialog(this, "❌ Invalid credentials.");
             }
+
+            JOptionPane.showMessageDialog(this, "❌ Invalid username or password.");
         });
 
-        setVisible(true);
-    }
+        add(userLabel); add(usernameField);
+        add(passLabel); add(passwordField);
+        add(new JLabel()); // empty spacer
+        add(loginBtn);
 
-    public static void main(String[] args) {
-        Database.loadFromExcel("src/main/resources/MotorPH_Employee_Data.xlsx");
-        new LoginUI();
+        setVisible(true);
     }
 }

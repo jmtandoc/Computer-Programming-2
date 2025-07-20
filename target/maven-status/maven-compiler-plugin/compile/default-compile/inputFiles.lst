@@ -9,6 +9,8 @@ C:\Users\jhoan\OneDrive\Documents\Desktop\Investments\Documents\NetBeansProjects
 C:\Users\jhoan\OneDrive\Documents\Desktop\Investments\Documents\NetBeansProjects\MotorPHPayrollFixed\src\main\java\com\motorph\model\AttendanceLog.java
 C:\Users\jhoan\OneDrive\Documents\Desktop\Investments\Documents\NetBeansProjects\MotorPHPayrollFixed\src\main\java\com\motorph\ui\LeaveManagerUI.java
 C:\Users\jhoan\OneDrive\Documents\Desktop\Investments\Documents\NetBeansProjects\MotorPHPayrollFixed\src\main\java\com\motorph\model\LeaveRequest.java
+C:\Users\jhoan\OneDrive\Documents\Desktop\Investments\Documents\NetBeansProjects\MotorPHPayrollFixed\src\main\java\com\motorph\ui\PayslipGeneratorUI.java
+C:\Users\jhoan\OneDrive\Documents\Desktop\Investments\Documents\NetBeansProjects\MotorPHPayrollFixed\src\main\java\com\motorph\database\ExcelWriter.java
 C:\Users\jhoan\OneDrive\Documents\Desktop\Investments\Documents\NetBeansProjects\MotorPHPayrollFixed\src\main\java\com\motorph\ui\CompensationUI.java
 C:\Users\jhoan\OneDrive\Documents\Desktop\Investments\Documents\NetBeansProjects\MotorPHPayrollFixed\src\main\java\com\motorph\model\Employee.java
 C:\Users\jhoan\OneDrive\Documents\Desktop\Investments\Documents\NetBeansProjects\MotorPHPayrollFixed\src\main\java\com\motorph\ui\AdminPanelUI.java
@@ -26,9 +28,11 @@ C:\Users\jhoan\OneDrive\Documents\Desktop\Investments\Documents\NetBeansProjects
 C:\Users\jhoan\OneDrive\Documents\Desktop\Investments\Documents\NetBeansProjects\MotorPHPayrollFixed\src\main\java\com\motorph\model\Payslip.java
 C:\Users\jhoan\OneDrive\Documents\Desktop\Investments\Documents\NetBeansProjects\MotorPHPayrollFixed\src\main\java\com\motorph\service\PayrollService.java
 C:\Users\jhoan\OneDrive\Documents\Desktop\Investments\Documents\NetBeansProjects\MotorPHPayrollFixed\src\main\java\com\motorph\ui\AdminDashboardUI.java
+C:\Users\jhoan\OneDrive\Documents\Desktop\Investments\Documents\NetBeansProjects\MotorPHPayrollFixed\src\main\java\com\motorph\export\PDFExporter.java
 C:\Users\jhoan\OneDrive\Documents\Desktop\Investments\Documents\NetBeansProjects\MotorPHPayrollFixed\src\main\java\com\motorph\model\Role.java
 C:\Users\jhoan\OneDrive\Documents\Desktop\Investments\Documents\NetBeansProjects\MotorPHPayrollFixed\src\main\java\com\motorph\ui\LandingPageUI.java
 C:\Users\jhoan\OneDrive\Documents\Desktop\Investments\Documents\NetBeansProjects\MotorPHPayrollFixed\src\main\java\com\motorph\ui\EmployeeDashboardUI.java
+C:\Users\jhoan\OneDrive\Documents\Desktop\Investments\Documents\NetBeansProjects\MotorPHPayrollFixed\src\main\java\com\motorph\ui\PasswordChangeUI.java
 C:\Users\jhoan\OneDrive\Documents\Desktop\Investments\Documents\NetBeansProjects\MotorPHPayrollFixed\src\main\java\com\motorph\ui\LeaveRequestUI.java
 C:\Users\jhoan\OneDrive\Documents\Desktop\Investments\Documents\NetBeansProjects\MotorPHPayrollFixed\src\main\java\com\motorph\model\User.java
 C:\Users\jhoan\OneDrive\Documents\Desktop\Investments\Documents\NetBeansProjects\MotorPHPayrollFixed\src\main\java\com\motorph\ui\EmployeeListUI.java

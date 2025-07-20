@@ -1,0 +1,5 @@
+Payslip for 10008
+Period: 2025-07-01 to 2025-07-31
+Gross Pay: 12625.0
+Deductions: 1112.5
+Net Pay: 11512.5

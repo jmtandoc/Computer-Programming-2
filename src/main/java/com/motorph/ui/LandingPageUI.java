@@ -1,7 +1,8 @@
 package com.motorph.ui;
 
-import com.motorph.model.*;
 import com.motorph.database.Database;
+import com.motorph.database.ExcelWriter;
+import com.motorph.model.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,29 +17,37 @@ public class LandingPageUI extends JFrame {
         emp = Database.getEmployeeByUsername(user.getUsername());
 
         setTitle("MotorPH Dashboard");
-        setSize(880, 560);
+        setSize(960, 560);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // 🕓 Right Side Clock + Time Controls
+        // 🕒 Clock + Time Controls Panel
         JLabel clockLabel = new JLabel(getCurrentTime(), SwingConstants.CENTER);
-        clockLabel.setFont(new Font("Monospaced", Font.BOLD, 16));
+        clockLabel.setFont(new Font("Monospaced", Font.PLAIN, 14));
         Timer timer = new Timer(1000, e -> clockLabel.setText(getCurrentTime()));
         timer.start();
 
         JButton timeInBtn = new JButton("Time In");
         JButton timeOutBtn = new JButton("Time Out");
+        JButton logoutBtn = new JButton("Logout");
 
         Font btnFont = new Font("SansSerif", Font.PLAIN, 12);
         Dimension btnSize = new Dimension(100, 30);
         timeInBtn.setFont(btnFont);
         timeOutBtn.setFont(btnFont);
+        logoutBtn.setFont(btnFont);
         timeInBtn.setPreferredSize(btnSize);
         timeOutBtn.setPreferredSize(btnSize);
+        logoutBtn.setPreferredSize(btnSize);
 
         timeInBtn.addActionListener(e -> recordAttendance("IN"));
         timeOutBtn.addActionListener(e -> recordAttendance("OUT"));
+        logoutBtn.addActionListener(e -> {
+            ExcelWriter.saveAttendanceToExcel("src/main/resources/MotorPH.xlsx"); // Auto-save attendance
+            dispose();
+            new LoginUI();
+        });
 
         JPanel clockPanel = new JPanel();
         clockPanel.setLayout(new BoxLayout(clockPanel, BoxLayout.Y_AXIS));
@@ -48,9 +57,10 @@ public class LandingPageUI extends JFrame {
         JPanel buttonRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
         buttonRow.add(timeInBtn);
         buttonRow.add(timeOutBtn);
+        buttonRow.add(logoutBtn);
         clockPanel.add(buttonRow);
 
-        // 👋 Left Side: Employee Info Panel
+        // 👤 Employee Info Panel
         JPanel leftPanel = new JPanel(new GridLayout(10, 1, 5, 5));
         leftPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 10));
 
@@ -67,44 +77,51 @@ public class LandingPageUI extends JFrame {
         leftPanel.add(new JLabel("Role: " + safe(emp.getRole().toString())));
         leftPanel.add(new JLabel("Employee ID: " + safe(emp.getEmpId())));
 
-        // ↔️ Combine Left and Right into Center
         JPanel centerPanel = new JPanel(new GridLayout(1, 2));
         centerPanel.add(leftPanel);
         centerPanel.add(clockPanel);
         add(centerPanel, BorderLayout.CENTER);
 
-        // 🧭 Action Buttons
+        // 🧭 Bottom Panel with Buttons
         JPanel bottomPanel = new JPanel(new FlowLayout());
 
         JButton leaveBtn = new JButton("📄 File Leave");
         JButton compBtn = new JButton("💰 Compensation");
-        JButton logoutBtn = new JButton("🔓 Logout");
+        JButton attendanceBtn = new JButton("📅 Attendance History");
+        JButton changePassBtn = new JButton("🔐 Change Password");
 
         leaveBtn.addActionListener(e -> new LeaveRequestUI(emp));
         compBtn.addActionListener(e -> new CompensationUI(emp));
-        logoutBtn.addActionListener(e -> {
-            dispose();
-            new LoginUI();
-        });
+        attendanceBtn.addActionListener(e -> new AttendanceViewerUI(emp));
+        changePassBtn.addActionListener(e -> new PasswordChangeUI(emp.getUserAccount()));
 
         bottomPanel.add(leaveBtn);
         bottomPanel.add(compBtn);
-        bottomPanel.add(logoutBtn);
+        bottomPanel.add(attendanceBtn);
+        bottomPanel.add(changePassBtn);
 
-        // 🔐 Admin Access
-        boolean isAdminDept = emp.getDepartment().equalsIgnoreCase("HR")
-                            || emp.getDepartment().equalsIgnoreCase("IT")
-                            || emp.getDepartment().equalsIgnoreCase("Executive");
+        // 🔐 Conditional Buttons
+        boolean canManage = emp.getRole() == Role.ADMIN &&
+                            (emp.getDepartment().equalsIgnoreCase("HR") ||
+                             emp.getDepartment().equalsIgnoreCase("IT") ||
+                             emp.getDepartment().equalsIgnoreCase("Executive"));
 
-        if (isAdminDept || emp.getRole() == Role.ADMIN) {
+        if (canManage) {
             JButton manageBtn = new JButton("🧾 Manage Records");
             manageBtn.addActionListener(e -> new AdminPanelUI());
             bottomPanel.add(manageBtn);
+
+            JButton employeeBtn = new JButton("👥 Manage Employees");
+            employeeBtn.addActionListener(e -> new EmployeeManagerUI());
+            bottomPanel.add(employeeBtn);
         }
 
-        if (emp.getRole() == Role.ADMIN
-            || emp.getRole() == Role.SUPERVISOR
-            || emp.getDepartment().equalsIgnoreCase("HR")) {
+        boolean isApprover = emp.getRole() == Role.ADMIN ||
+                             emp.getRole() == Role.SUPERVISOR ||
+                            (emp.getDepartment().equalsIgnoreCase("HR") &&
+                             emp.getRole() != Role.EMPLOYEE);
+
+        if (isApprover) {
             JButton approveBtn = new JButton("✅ Approve Leaves");
             approveBtn.addActionListener(e -> new LeaveApprovalUI(emp));
             bottomPanel.add(approveBtn);

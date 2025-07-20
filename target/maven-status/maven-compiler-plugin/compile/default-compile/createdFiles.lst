@@ -1,4 +1,5 @@
 com\motorph\util\AttendanceExporter.class
+com\motorph\database\ExcelWriter.class
 com\motorph\ui\CompensationUI.class
 com\motorph\ui\PasswordResetUI.class
 com\motorph\database\Database$1.class
@@ -12,7 +13,6 @@ com\motorph\ui\EmployeeManagerUI.class
 com\motorph\ui\SupervisorDashboardUI.class
 com\motorph\util\PayslipExporter.class
 com\motorph\ui\PayrollGUI.class
-com\motorph\ui\LoginUI$1.class
 com\motorph\database\Database.class
 com\motorph\model\Attendance.class
 com\motorph\motorphpayrollfixed\MotorPHPayrollFixed.class
@@ -27,12 +27,15 @@ com\motorph\ui\AttendanceViewerUI.class
 com\motorph\ui\PayrollDashboardUI.class
 com\motorph\ui\LoginUI.class
 com\motorph\ui\EditEmployeeUI.class
+com\motorph\export\PDFExporter.class
 com\motorph\model\Payslip.class
 com\motorph\ui\LeaveManagerUI.class
 com\motorph\service\PayrollService.class
 com\motorph\ui\EmployeeListUI.class
+com\motorph\ui\PasswordChangeUI.class
 com\motorph\ui\AdminPanelUI.class
 com\motorph\model\AttendanceLog.class
 com\motorph\Main.class
 com\motorph\model\Employee.class
 com\motorph\model\Role.class
+com\motorph\ui\PayslipGeneratorUI.class
