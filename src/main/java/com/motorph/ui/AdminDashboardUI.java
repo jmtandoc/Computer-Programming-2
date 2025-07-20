@@ -1,47 +1,31 @@
 package com.motorph.ui;
 
-import com.motorph.database.Database;
-import com.motorph.model.Employee;
+import com.motorph.model.User;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.util.List;
 
 public class AdminDashboardUI extends JFrame {
-    public AdminDashboardUI() {
+    private User currentUser;
+
+    public AdminDashboardUI(User user) {
+        this.currentUser = user;
         setTitle("Admin Dashboard");
-        setSize(400, 300);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(500, 300);
         setLocationRelativeTo(null);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLayout(new GridLayout(3, 1));
 
-        JPanel panel = new JPanel(new GridLayout(3, 1, 10, 10));
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        JLabel welcomeLabel = new JLabel("Welcome Admin: " + user.getUsername(), SwingConstants.CENTER);
+        JButton manageEmployeesBtn = new JButton("Manage Employees");
+        JButton viewLeavesBtn = new JButton("View Leave Requests");
 
-        panel.add(new JLabel("Welcome, Admin!", SwingConstants.CENTER));
+        manageEmployeesBtn.addActionListener(e -> new EmployeeManagerUI());
+        viewLeavesBtn.addActionListener(e -> new LeaveViewerUI());
 
-        JButton manageUsers = new JButton("Manage Users");
-        JButton viewEmployees = new JButton("View All Employees");
-
-        panel.add(manageUsers);
-        panel.add(viewEmployees);
-        add(panel);
-
-        // 🔗 Wire up "View All Employees" button
-        viewEmployees.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                List<Employee> employees = Database.getEmployees();
-                new EmployeeListUI(employees).setVisible(true);
-            }
-        });
-
-        // ✨ Optional: placeholder for "Manage Users"
-        manageUsers.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "Manage Users feature coming soon!");
-            }
-        });
-
+        add(welcomeLabel);
+        add(manageEmployeesBtn);
+        add(viewLeavesBtn);
         setVisible(true);
     }
 }

@@ -1,28 +1,43 @@
 package com.motorph.ui;
 
-import com.motorph.model.User;
+import com.motorph.model.Employee;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 
 public class EmployeeDashboardUI extends JFrame {
-    public EmployeeDashboardUI(User currentUser) {
-        setTitle("Employee Dashboard");
-        setSize(400, 300);
+
+    public EmployeeDashboardUI(Employee emp) {
+        setTitle("Welcome " + emp.getFullName());
+        setSize(600, 400);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
 
-        JPanel panel = new JPanel(new GridLayout(2, 1, 10, 10));
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        JPanel infoPanel = new JPanel(new GridLayout(0, 2));
+        infoPanel.setBorder(BorderFactory.createTitledBorder("Employee Summary"));
 
-        JLabel welcomeLabel = new JLabel("Welcome, " + currentUser.getUsername(), SwingConstants.CENTER);
-        panel.add(welcomeLabel);
+        infoPanel.add(new JLabel("Employee ID:"));
+        infoPanel.add(new JLabel(emp.getEmpId()));
 
-        JButton profileBtn = new JButton("View Profile");
-        profileBtn.addActionListener(e -> JOptionPane.showMessageDialog(null, "Feature coming soon!"));
-        panel.add(profileBtn);
+        infoPanel.add(new JLabel("Name:"));
+        infoPanel.add(new JLabel(emp.getFullName()));
 
-        add(panel);
+        infoPanel.add(new JLabel("Position:"));
+        infoPanel.add(new JLabel(emp.getPosition()));
+
+        infoPanel.add(new JLabel("Supervisor:"));
+        infoPanel.add(new JLabel(emp.getSupervisorId()));
+
+        infoPanel.add(new JLabel("Department:"));
+        infoPanel.add(new JLabel(emp.getDepartment()));
+
+        infoPanel.add(new JLabel("Phone:"));
+        infoPanel.add(new JLabel(emp.getPhoneNumber()));
+
+        infoPanel.add(new JLabel("SSS #:"));
+        infoPanel.add(new JLabel(emp.getSssNumber()));
+
+        add(infoPanel, BorderLayout.CENTER);
         setVisible(true);
     }
 }

@@ -1,0 +1,5 @@
+Payslip for 10002
+Period: 2025-07-01 to 2025-07-31
+Gross Pay: 4500.0
+Deductions: 2800.0
+Net Pay: 1700.0

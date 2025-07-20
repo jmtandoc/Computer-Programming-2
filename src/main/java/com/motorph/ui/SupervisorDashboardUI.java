@@ -1,37 +1,35 @@
 package com.motorph.ui;
 
-import com.motorph.model.User;
+import com.motorph.model.Employee;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 
 public class SupervisorDashboardUI extends JFrame {
-    public SupervisorDashboardUI(User currentUser) {
+
+    public SupervisorDashboardUI(Employee emp) {
         setTitle("Supervisor Dashboard");
-        setSize(400, 300);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(600, 400);
         setLocationRelativeTo(null);
+        setLayout(new BorderLayout());
 
-        JPanel panel = new JPanel(new GridLayout(3, 1, 10, 10));
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        JLabel welcomeLabel = new JLabel("Welcome, Supervisor " + emp.getFullName(), SwingConstants.CENTER);
+        welcomeLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
+        add(welcomeLabel, BorderLayout.NORTH);
 
-        JLabel welcomeLabel = new JLabel("Welcome, Supervisor " + currentUser.getUsername(), SwingConstants.CENTER);
-        panel.add(welcomeLabel);
+        JPanel centerPanel = new JPanel(new GridLayout(2, 1, 10, 10));
+        JButton approveLeaveBtn = new JButton("📋 Approve Leaves");
+        JButton viewTeamBtn = new JButton("👥 View Team");
 
-        JButton approveLeaveBtn = new JButton("Approve Leave Requests");
-        JButton viewTeamBtn = new JButton("View Team Members");
+        approveLeaveBtn.addActionListener(e -> new LeaveApprovalUI(emp));
+        viewTeamBtn.addActionListener(e -> {
+            JOptionPane.showMessageDialog(this, "Feature coming soon!");
+        });
 
-        approveLeaveBtn.addActionListener(e ->
-            JOptionPane.showMessageDialog(null, "Approve Leave feature coming soon!"));
+        centerPanel.add(approveLeaveBtn);
+        centerPanel.add(viewTeamBtn);
 
-        viewTeamBtn.addActionListener(e ->
-            JOptionPane.showMessageDialog(null, "View Team feature coming soon!"));
-
-        panel.add(approveLeaveBtn);
-        panel.add(viewTeamBtn);
-
-        add(panel);
+        add(centerPanel, BorderLayout.CENTER);
         setVisible(true);
     }
 }

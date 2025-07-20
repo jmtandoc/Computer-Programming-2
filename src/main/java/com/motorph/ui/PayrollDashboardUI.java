@@ -1,34 +1,21 @@
 package com.motorph.ui;
 
+import com.motorph.model.User;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 
 public class PayrollDashboardUI extends JFrame {
-    public PayrollDashboardUI() {
+    public PayrollDashboardUI(User user) {
         setTitle("Payroll Dashboard");
-        setSize(400, 300);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(500, 300);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        JPanel panel = new JPanel(new GridLayout(3, 1, 10, 10));
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        JLabel welcomeLabel = new JLabel("Welcome Payroll Officer: " + user.getUsername(), SwingConstants.CENTER);
+        add(welcomeLabel, BorderLayout.NORTH);
 
-        panel.add(new JLabel("Welcome to Payroll Dashboard", SwingConstants.CENTER));
-
-        JButton generatePayslipBtn = new JButton("Generate Payslip");
-        JButton processPayrollBtn = new JButton("Process Payroll");
-
-        generatePayslipBtn.addActionListener(e ->
-            JOptionPane.showMessageDialog(null, "Payslip generation coming soon!"));
-
-        processPayrollBtn.addActionListener(e ->
-            JOptionPane.showMessageDialog(null, "Payroll processing coming soon!"));
-
-        panel.add(generatePayslipBtn);
-        panel.add(processPayrollBtn);
-
-        add(panel);
+        // Add navigation buttons or panels here as needed
         setVisible(true);
     }
 }

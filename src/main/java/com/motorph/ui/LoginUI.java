@@ -1,67 +1,52 @@
 package com.motorph.ui;
 
-import com.motorph.model.User;
-import com.motorph.model.Role;
-import com.motorph.service.AuthService;
 import com.motorph.database.Database;
-import com.motorph.ui.AdminDashboardUI;
-import com.motorph.ui.EmployeeDashboardUI;
-import com.motorph.ui.SupervisorDashboardUI;
-import com.motorph.ui.PayrollDashboardUI;
+import com.motorph.model.*;
 
-import java.util.List;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 
 public class LoginUI extends JFrame {
-    private JTextField usernameField;
-    private JPasswordField passwordField;
-    private JButton loginButton;
 
     public LoginUI() {
         setTitle("MotorPH Login");
-        setSize(300, 180);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(420, 240);
         setLocationRelativeTo(null);
-        setLayout(new GridLayout(3, 2, 10, 10));
+        setLayout(new GridLayout(4, 2, 10, 10));
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         add(new JLabel("Username:"));
-        usernameField = new JTextField();
+        JTextField usernameField = new JTextField();
         add(usernameField);
 
         add(new JLabel("Password:"));
-        passwordField = new JPasswordField();
+        JPasswordField passwordField = new JPasswordField();
         add(passwordField);
 
-        loginButton = new JButton("Login");
         add(new JLabel());
-        add(loginButton);
+        JButton loginBtn = new JButton("🔓 Login");
+        add(loginBtn);
 
-        loginButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String username = usernameField.getText().trim();
-                String password = new String(passwordField.getPassword()).trim();
+        loginBtn.addActionListener(e -> {
+            String username = usernameField.getText().trim();
+            String password = new String(passwordField.getPassword()).trim();
 
-                System.out.println("🔐 You typed: " + username + " / " + password);
+            User user = Database.findUserByUsername(username);
+            if (user != null && user.getPassword().equals(password)) {
+                Employee emp = Database.getEmployeeByUsername(username);
+                Role role = user.getRole();
 
-                List<User> users = Database.getUsers();
-                AuthService authService = new AuthService(users);
-                User currentUser = authService.login(username, password);
-
-                if (currentUser != null) {
-                    Role role = currentUser.getRole();
-                    switch (role) {
-                        case ADMIN -> new AdminDashboardUI().setVisible(true);
-                        case SUPERVISOR -> new SupervisorDashboardUI(currentUser).setVisible(true);
-                        case EMPLOYEE -> new EmployeeDashboardUI(currentUser).setVisible(true);
-                        case PAYROLL -> new PayrollDashboardUI().setVisible(true);
-                        default -> JOptionPane.showMessageDialog(null, "Unknown role.");
-                    }
-                    dispose();
-                } else {
-                    JOptionPane.showMessageDialog(null, "Invalid credentials. Try again.");
+                switch (role) {
+                    case ADMIN -> new LandingPageUI(user);
+                    case SUPERVISOR -> new SupervisorDashboardUI(emp);
+                    case PAYROLL -> JOptionPane.showMessageDialog(this, "Payroll dashboard coming soon!");
+                    case EMPLOYEE -> new LandingPageUI(user);
+                    default -> JOptionPane.showMessageDialog(this, "⚠️ Unknown role.");
                 }
+
+                dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "❌ Invalid credentials.");
             }
         });
 
@@ -69,7 +54,7 @@ public class LoginUI extends JFrame {
     }
 
     public static void main(String[] args) {
-        Database.loadFromExcel("src/main/resources/MotorPH Employee Data.xlsx");
+        Database.loadFromExcel("src/main/resources/MotorPH_Employee_Data.xlsx");
         new LoginUI();
     }
 }
