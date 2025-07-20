@@ -17,6 +17,7 @@ com\motorph\database\Database.class
 com\motorph\model\Attendance.class
 com\motorph\motorphpayrollfixed\MotorPHPayrollFixed.class
 com\motorph\ui\PayslipViewerUI.class
+com\motorph\ui\RecordsManagerUI.class
 com\motorph\ui\LeaveRequestUI.class
 com\motorph\model\LeaveRequest.class
 com\motorph\service\PayrollProcessor.class

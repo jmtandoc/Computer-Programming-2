@@ -8,10 +8,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import static org.apache.poi.ss.usermodel.CellType.NUMERIC;
-import static org.apache.poi.ss.usermodel.CellType.STRING;
 
 public class Database {
+
     private static final List<User> users = new ArrayList<>();
     private static final List<Employee> employees = new ArrayList<>();
     private static final List<AttendanceLog> attendanceLogs = new ArrayList<>();
@@ -24,7 +23,6 @@ public class Database {
         loadAttendanceFromExcel(filePath);
     }
 
-    // 🔐 Load login credentials
     public static void loadUsersFromExcel(String filePath) {
         try (FileInputStream fis = new FileInputStream(filePath);
              Workbook workbook = new XSSFWorkbook(fis)) {
@@ -34,6 +32,7 @@ public class Database {
 
             for (Row row : sheet) {
                 if (row.getRowNum() == 0) continue;
+
                 String username = getCellAsString(row.getCell(0));
                 String password = getCellAsString(row.getCell(1));
                 String roleStr = getCellAsString(row.getCell(2));
@@ -53,7 +52,6 @@ public class Database {
         }
     }
 
-    // 👤 Load employee details and salary
     public static void loadEmployeesFromExcel(String filePath) {
         try (FileInputStream fis = new FileInputStream(filePath);
              Workbook workbook = new XSSFWorkbook(fis)) {
@@ -96,8 +94,6 @@ public class Database {
                 if (user == null) continue;
 
                 Employee emp = new Employee(empId, firstName + " " + lastName, position, supervisor, user, dept, role);
-
-                // Personal details
                 emp.setBirthday(birthday);
                 emp.setAddress(address);
                 emp.setPhoneNumber(phone);
@@ -107,15 +103,12 @@ public class Database {
                 emp.setTinNumber(tin);
                 emp.setPagibigNumber(pagibig);
 
-                // Salary components
                 try {
                     emp.setBasicSalary(Double.parseDouble(basic));
                     emp.setRiceSubsidy(Double.parseDouble(rice));
                     emp.setPhoneAllowance(Double.parseDouble(phoneAllow));
                     emp.setClothingAllowance(Double.parseDouble(clothing));
-                } catch (NumberFormatException ex) {
-                    // Skip invalid salary input
-                }
+                } catch (NumberFormatException ignored) {}
 
                 employees.add(emp);
             }
@@ -125,7 +118,6 @@ public class Database {
         }
     }
 
-    // 🕓 Load attendance records
     public static void loadAttendanceFromExcel(String filePath) {
         try (FileInputStream fis = new FileInputStream(filePath);
              Workbook workbook = new XSSFWorkbook(fis)) {
@@ -137,9 +129,9 @@ public class Database {
                 if (row.getRowNum() == 0) continue;
 
                 String empId = getCellAsString(row.getCell(0));
-                Cell dateCell = row.getCell(3);
-                Cell timeInCell = row.getCell(4);
-                Cell timeOutCell = row.getCell(5);
+                Cell dateCell = row.getCell(1);
+                Cell timeInCell = row.getCell(2);
+                Cell timeOutCell = row.getCell(3);
 
                 String date = formatDate(dateCell);
                 String timeIn = formatTime(timeInCell);
@@ -155,29 +147,61 @@ public class Database {
         }
     }
 
-    // 🧠 Utility functions
     private static String getCellAsString(Cell cell) {
         if (cell == null) return "";
         return switch (cell.getCellType()) {
             case STRING -> cell.getStringCellValue().trim();
             case NUMERIC -> DateUtil.isCellDateFormatted(cell)
-                ? new SimpleDateFormat("MM-dd-yyyy").format(cell.getDateCellValue())
-                : String.valueOf((int) cell.getNumericCellValue());
+                    ? new SimpleDateFormat("MM-dd-yyyy").format(cell.getDateCellValue())
+                    : String.valueOf((int) cell.getNumericCellValue());
             default -> "";
         };
     }
 
     private static String formatDate(Cell cell) {
-        if (cell == null || !DateUtil.isCellDateFormatted(cell)) return "";
-        return new SimpleDateFormat("MM-dd-yyyy").format(cell.getDateCellValue());
+        if (cell == null) return "";
+
+        try {
+            if (DateUtil.isCellDateFormatted(cell)) {
+                return new SimpleDateFormat("MM-dd-yyyy").format(cell.getDateCellValue());
+            } else if (cell.getCellType() == CellType.STRING) {
+                String text = cell.getStringCellValue().trim();
+                List<String> formats = Arrays.asList("MM-dd-yyyy", "yyyy-MM-dd", "MM/dd/yyyy", "MMMM d, yyyy");
+
+                for (String pattern : formats) {
+                    try {
+                        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+                        sdf.setLenient(false);
+                        Date parsed = sdf.parse(text);
+                        return new SimpleDateFormat("MM-dd-yyyy").format(parsed);
+                    } catch (Exception ignore) {}
+                }
+
+                return text;
+            }
+        } catch (Exception e) {
+            System.err.println("⚠️ Date parse error: " + e.getMessage());
+        }
+
+        return "";
     }
 
     private static String formatTime(Cell cell) {
-        if (cell == null || cell.getCellType() != CellType.NUMERIC) return "";
-        return new SimpleDateFormat("HH:mm").format(DateUtil.getJavaDate(cell.getNumericCellValue()));
+        if (cell == null) return "";
+
+        try {
+            if (cell.getCellType() == CellType.NUMERIC) {
+                return new SimpleDateFormat("HH:mm").format(DateUtil.getJavaDate(cell.getNumericCellValue()));
+            } else if (cell.getCellType() == CellType.STRING) {
+                return cell.getStringCellValue().trim();
+            }
+        } catch (Exception e) {
+            System.err.println("⚠️ Time parse error: " + e.getMessage());
+        }
+
+        return "";
     }
 
-    // 🔄 Add & Get methods
     public static void addAttendanceLog(AttendanceLog log) {
         attendanceLogs.add(log);
     }
@@ -186,15 +210,17 @@ public class Database {
         leaveRequests.add(lr);
     }
 
-    public static LeaveRequest findLeaveById(String id) {
-        for (LeaveRequest lr : leaveRequests) {
-            if (lr.getLeaveId().equalsIgnoreCase(id)) return lr;
-        }
-        return null;
-    }
-
     public static void addPayslip(Payslip p) {
         payslips.add(p);
+    }
+
+    public static void updateUserPassword(String username, String newPassword) {
+        for (User u : users) {
+            if (u.getUsername().equalsIgnoreCase(username)) {
+                u.setPassword(newPassword);
+                break;
+            }
+        }
     }
 
     public static User findUserByUsername(String username) {
@@ -211,9 +237,16 @@ public class Database {
         return null;
     }
 
+    public static LeaveRequest findLeaveById(String id) {
+        for (LeaveRequest lr : leaveRequests) {
+            if (lr.getLeaveId().equalsIgnoreCase(id)) return lr;
+        }
+        return null;
+    }
+
     public static List<User> getUsers() { return users; }
     public static List<Employee> getEmployees() { return employees; }
     public static List<AttendanceLog> getAttendanceLogs() { return attendanceLogs; }
     public static List<LeaveRequest> getLeaveRequests() { return leaveRequests; }
-    public static List<Payslip> getPayslips() { return payslips; }
+public static List<Payslip> getPayslips() { return payslips; }
 }

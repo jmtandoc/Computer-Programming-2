@@ -22,7 +22,6 @@ public class LandingPageUI extends JFrame {
         setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // 🕒 Clock + Time Controls Panel
         JLabel clockLabel = new JLabel(getCurrentTime(), SwingConstants.CENTER);
         clockLabel.setFont(new Font("Monospaced", Font.PLAIN, 14));
         Timer timer = new Timer(1000, e -> clockLabel.setText(getCurrentTime()));
@@ -44,7 +43,7 @@ public class LandingPageUI extends JFrame {
         timeInBtn.addActionListener(e -> recordAttendance("IN"));
         timeOutBtn.addActionListener(e -> recordAttendance("OUT"));
         logoutBtn.addActionListener(e -> {
-            ExcelWriter.saveAttendanceToExcel("src/main/resources/MotorPH.xlsx"); // Auto-save attendance
+            ExcelWriter.saveAttendanceToExcel("data/MotorPH.xlsx"); // ✅ Writable path
             dispose();
             new LoginUI();
         });
@@ -60,7 +59,6 @@ public class LandingPageUI extends JFrame {
         buttonRow.add(logoutBtn);
         clockPanel.add(buttonRow);
 
-        // 👤 Employee Info Panel
         JPanel leftPanel = new JPanel(new GridLayout(10, 1, 5, 5));
         leftPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 10));
 
@@ -82,7 +80,6 @@ public class LandingPageUI extends JFrame {
         centerPanel.add(clockPanel);
         add(centerPanel, BorderLayout.CENTER);
 
-        // 🧭 Bottom Panel with Buttons
         JPanel bottomPanel = new JPanel(new FlowLayout());
 
         JButton leaveBtn = new JButton("📄 File Leave");
@@ -100,7 +97,6 @@ public class LandingPageUI extends JFrame {
         bottomPanel.add(attendanceBtn);
         bottomPanel.add(changePassBtn);
 
-        // 🔐 Conditional Buttons
         boolean canManage = emp.getRole() == Role.ADMIN &&
                             (emp.getDepartment().equalsIgnoreCase("HR") ||
                              emp.getDepartment().equalsIgnoreCase("IT") ||
